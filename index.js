@@ -2,30 +2,52 @@ const { read } = require("fs");
 const http = require("http");
 const fs = require('fs');
 
-const pathToFiles = './filess';
+const pathToFiles = './files';
 
 const requestListener = (req, res) => {
-    
-    fs.readdir(pathToFiles, (err, files) => {
-        if(err) {
-            res.writeHead(500);
-            res.end("Internal server error");
-        } else {
-            console.log(files.join(', '));
-        }
-        
-    })
 
-    if(req.method != 'GET') {
+    if(req.url === '/get' && req.method == 'GET') {
+
+        fs.readdir(pathToFiles, (err, files) => {
+            if(err) {
+                res.writeHead(500);
+                res.end("Internal server error");
+            } else {
+                res.writeHead(200);
+                res.end(files.join(', '));
+            }
+            
+        });
+
+    } else if (req.url === '/get' && req.method != 'GET') {
         res.writeHead(405);
         res.end("HTTP method not allowed");
     }
 
-    // if(req.url === '/get') {
-    //     console.log('get')
-    // }
-    // res.writeHead(200);
-    // res.end("Hello! It's my first server");
+
+    if(req.url === '/post' && req.method == 'POST') {
+        res.writeHead(200);
+        res.end('success');
+    } else if(req.url === '/post' && req.method != 'POST') {
+        res.writeHead(405);
+        res.end('HTTP method not allowed');
+    }
+
+
+    if(req.url === '/delete' && req.method == 'DELETE') {
+        res.writeHead(200);
+        res.end('success');
+    } else if(req.url === '/delete' && req.method != 'DELETE') {
+        res.writeHead(405);
+        res.end('HTTP method not allowed');
+    }
+
+
+    if(req.url === '/redirected' && req.method == 'GET') {
+        res.writeHead(301);
+        res.end('At the moment, the resource is available at /redirected');
+    }
+    
 }
 
 const host = 'localhost';
